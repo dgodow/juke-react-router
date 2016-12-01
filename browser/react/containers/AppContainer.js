@@ -13,6 +13,20 @@ import { convertAlbum, convertAlbums, skip } from '../utils';
 
 export default class AppContainer extends Component {
 
+/*
+
+const initialState = {
+  albums: [],
+  selectedAlbum: {},
+  currentSong: {},
+  currentSongList: [],
+  isPlaying: false,
+  progress: 0
+};
+
+*/
+
+
   constructor (props) {
     super(props);
     this.state = initialState;
@@ -110,17 +124,16 @@ export default class AppContainer extends Component {
         </div>
         <div className="col-xs-10">
         {
-          this.state.selectedAlbum.id ?
-          <Album
-            album={this.state.selectedAlbum}
-            currentSong={this.state.currentSong}
-            isPlaying={this.state.isPlaying}
-            toggleOne={this.toggleOne}
-          /> :
-          <Albums
-            albums={this.state.albums}
-            selectAlbum={this.selectAlbum}
-          />
+          this.props.children 
+          ? React.cloneElement(this.props.children, { 
+              album: this.state.selectedAlbum,
+              currentSong: this.state.currentSong,
+              isPlaying: this.state.isPlaying,
+              toggleOne: this.toggleOne,
+              albums: this.state.albums,
+              selectAlbum: this.selectAlbum})
+
+          : null
         }
         </div>
         <Player
