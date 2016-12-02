@@ -9,7 +9,7 @@ class Artist extends React.Component {
 
   render () {
     const artist = this.props.artist;
-    console.log(artist.songs)
+    console.log(artist)
     return (
       <div>
         <h3>{artist.name}</h3>
@@ -22,10 +22,10 @@ class Artist extends React.Component {
           </div>
           {
             artist.songs.map(song => {
-              <tr key={song.id}>
+              return ( <tr key={song.id}>
                 <td>
                   <button className="btn btn-default btn-xs" onClick={() => toggle(song, songs)}>
-                    <span className={song.id === currentSong.id && isPlaying ? "glyphicon glyphicon-pause" : "glyphicon glyphicon-play"}></span>
+
                   </button>
                 </td>
                 <td>{ song.name }</td>
@@ -34,6 +34,7 @@ class Artist extends React.Component {
                 </td>
                 <td>{ song.genre }</td>
               </tr>
+              )
             })
           }
       </div>

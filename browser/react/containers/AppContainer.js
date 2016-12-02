@@ -124,14 +124,12 @@ const initialState = {
     axios.get(`/api/artists/${artistId}`)
       .then(res => res.data)
       .then(convertArtist)
-      .then(axios.spread((artist, songs, albums) => {
-        artist.songs = songs.data;
-        artist.albums = albums.data;
-        return artist;
-      }))
-      .then(artist => this.setState({
+      .then(artist => {
+        console.log('artist', artist);
+        this.setState({
         selectedArtist: artist
-      }));
+      })
+    })
   }
 
   selectAlbum (albumId) {

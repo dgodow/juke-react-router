@@ -15,7 +15,13 @@ export const convertAlbum = (album) => {
 export const convertArtist = (artist) => {
   const songs = axios.get(`/api/artists/${artist.id}/songs`);
   const albums = axios.get(`/api/artists/${artist.id}/albums`);
-  return axios.all([artist, songs, albums]);
+
+  return Promise.all([songs, albums])
+    .then((results) => {
+      artist.songs = results[0].data;
+      artist.albums = results[1].data;
+      return artist;
+    })
 };
 
 
@@ -30,4 +36,3 @@ export const skip = (interval, { currentSongList, currentSong }) => {
   const next = currentSongList[idx];
   return [next, currentSongList];
 };
-
