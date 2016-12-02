@@ -8,6 +8,7 @@ import Albums from '../components/Albums.js';
 import Album from '../components/Album';
 import Sidebar from '../components/Sidebar';
 import Player from '../components/Player';
+import Artist from '../components/Artist';
 
 import { convertAlbum, convertAlbums, skip } from '../utils';
 
@@ -37,12 +38,14 @@ const initialState = {
     this.prev = this.prev.bind(this);
     this.selectAlbum = this.selectAlbum.bind(this);
     this.deselectAlbum = this.deselectAlbum.bind(this);
+    this.getArtists = this.getArtists.bind(this);
+    this.artistsOnLoad = this.artistsOnLoad.bind(this);
   }
 
   componentDidMount () {
     axios.get('/api/albums/')
       .then(res => res.data)
-      .then(album => this.onLoad(convertAlbums(album)));
+      .then(album => this.albumsOnLoad(convertAlbums(album)));
 
     AUDIO.addEventListener('ended', () =>
       this.next());
@@ -50,10 +53,22 @@ const initialState = {
       this.setProgress(AUDIO.currentTime / AUDIO.duration));
   }
 
-  onLoad (albums) {
+  albumsOnLoad (albums) {
     this.setState({
       albums: albums
     });
+  }
+
+  getArtists () {
+    axios.get('/api/artists/')
+      .then(res => res.data)
+      .then(artists => this.artistsOnLoad(artists));
+  }
+
+  artistsOnLoad (artists) {
+    this.setState({
+      artists: artists
+    })
   }
 
   play () {
@@ -104,6 +119,14 @@ const initialState = {
     this.setState({ progress: progress });
   }
 
+  selectArtist (artistId) {
+    axios.get(`/api/artists/${artistId}`)
+      .then(res => res.data)
+      .then(artist => this.setState({
+        selectedArtist: artist
+      }))
+  }
+
   selectAlbum (albumId) {
     axios.get(`/api/albums/${albumId}`)
       .then(res => res.data)
@@ -131,7 +154,11 @@ const initialState = {
               isPlaying: this.state.isPlaying,
               toggleOne: this.toggleOne,
               albums: this.state.albums,
-              selectAlbum: this.selectAlbum})
+              artists: this.state.artists,
+              selectAlbum: this.selectAlbum,
+              getArtists: this.getArtists,
+              artist: this.state.selectedArtist
+            })
 
           : null
         }
