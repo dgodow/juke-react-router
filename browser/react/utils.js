@@ -1,3 +1,6 @@
+import axios from 'axios';
+
+
 export const convertSong = (song) => {
   song.audioUrl = `/api/songs/${song.id}/audio`;
   return song;
@@ -8,6 +11,13 @@ export const convertAlbum = (album) => {
   album.songs = album.songs.map(convertSong);
   return album;
 };
+
+export const convertArtist = (artist) => {
+  const songs = axios.get(`/api/artists/${artist.id}/songs`);
+  const albums = axios.get(`/api/artists/${artist.id}/albums`);
+  return axios.all([artist, songs, albums]);
+};
+
 
 export const convertAlbums = (albums) =>
   albums.map(album => convertAlbum(album));
@@ -20,3 +30,4 @@ export const skip = (interval, { currentSongList, currentSong }) => {
   const next = currentSongList[idx];
   return [next, currentSongList];
 };
+

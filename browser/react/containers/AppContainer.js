@@ -10,7 +10,7 @@ import Sidebar from '../components/Sidebar';
 import Player from '../components/Player';
 import Artist from '../components/Artist';
 
-import { convertAlbum, convertAlbums, skip } from '../utils';
+import { convertAlbum, convertAlbums, skip, convertArtist } from '../utils';
 
 export default class AppContainer extends Component {
 
@@ -40,6 +40,7 @@ const initialState = {
     this.deselectAlbum = this.deselectAlbum.bind(this);
     this.getArtists = this.getArtists.bind(this);
     this.artistsOnLoad = this.artistsOnLoad.bind(this);
+    this.selectArtist = this.selectArtist.bind(this);
   }
 
   componentDidMount () {
@@ -122,17 +123,24 @@ const initialState = {
   selectArtist (artistId) {
     axios.get(`/api/artists/${artistId}`)
       .then(res => res.data)
+      .then(convertArtist)
+      .then(axios.spread((artist, songs, albums) => {
+        artist.songs = songs.data;
+        artist.albums = albums.data;
+        return artist;
+      }))
       .then(artist => this.setState({
         selectedArtist: artist
-      }))
+      }));
   }
 
   selectAlbum (albumId) {
     axios.get(`/api/albums/${albumId}`)
       .then(res => res.data)
-      .then(album => this.setState({
+      .then(album => {this.setState({
         selectedAlbum: convertAlbum(album)
-      }));
+      });
+    });
   }
 
   deselectAlbum () {
@@ -147,8 +155,8 @@ const initialState = {
         </div>
         <div className="col-xs-10">
         {
-          this.props.children 
-          ? React.cloneElement(this.props.children, { 
+          this.props.children
+          ? React.cloneElement(this.props.children, {
               album: this.state.selectedAlbum,
               currentSong: this.state.currentSong,
               isPlaying: this.state.isPlaying,
@@ -156,6 +164,7 @@ const initialState = {
               albums: this.state.albums,
               artists: this.state.artists,
               selectAlbum: this.selectAlbum,
+              selectArtist: this.selectArtist,
               getArtists: this.getArtists,
               artist: this.state.selectedArtist
             })

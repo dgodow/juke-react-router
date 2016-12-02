@@ -1,16 +1,47 @@
 import React from 'react';
+import Songs from './Songs'
 
 class Artist extends React.Component {
 
+  componentDidMount () {
+    this.props.selectArtist(this.props.routeParams.artistId);
+  }
+
   render () {
+    const artist = this.props.artist;
+    console.log(artist.songs)
     return (
       <div>
-        <h3>{this.props.artist.name}</h3>
-        <h4></h4>
+        <h3>{artist.name}</h3>
+
         <h4>SONGS</h4>
+        <div>
+          {
+
+          }
+          </div>
+          {
+            artist.songs.map(song => {
+              <tr key={song.id}>
+                <td>
+                  <button className="btn btn-default btn-xs" onClick={() => toggle(song, songs)}>
+                    <span className={song.id === currentSong.id && isPlaying ? "glyphicon glyphicon-pause" : "glyphicon glyphicon-play"}></span>
+                  </button>
+                </td>
+                <td>{ song.name }</td>
+                <td>
+                  <span>{ song.artists ? song.artists.map(artist => artist.name).join(', ') : null }</span>
+                </td>
+                <td>{ song.genre }</td>
+              </tr>
+            })
+          }
       </div>
       )
   }
 }
+
+
+
 
 export default Artist;

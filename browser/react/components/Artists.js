@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React from 'react';
+import { Link } from 'react-router'
 
 class Artists extends React.Component {
 
@@ -8,7 +9,6 @@ class Artists extends React.Component {
   }
 
   render () {
-    console.log(this.props.artists);
 
     return (
       <div>
@@ -18,9 +18,9 @@ class Artists extends React.Component {
             this.props.artists.map(artist => {
               return (
                 <div className="list-group-item" key={artist.id}>
-                  <Link to={`/artist/${artist.id}`}>{ artist.name }</Link>}
+                  <Link to={`/artists/${artist.id}`}>{ artist.name }</Link>
                 </div>
-              )    
+              )
             })
           }
         </div>
